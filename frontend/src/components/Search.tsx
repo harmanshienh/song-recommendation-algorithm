@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { HiMagnifyingGlass } from "react-icons/hi2";
+import SearchSuggestion from './SearchSuggestion';
 
-interface Suggestion {
+export interface Suggestion {
     name: string;
     artists: string[];
 }
@@ -33,6 +34,8 @@ export default function Search() {
         e.preventDefault();
     }
 
+    console.log(suggestions);
+
     return (
         <>
             <form onClick={handleClick} onSubmit={handleSubmit}>
@@ -48,13 +51,13 @@ export default function Search() {
                         className='text-2xl bg-transparent w-full focus:outline-none' />
                 </div>
             </form>
+            <div className='max-h-96 overflow-y-auto'>
             {suggestions.length > 0 && (
                 suggestions.map((suggestion) => (
-                        <div>
-                            <span className='text-white'>{suggestion.name} by {suggestion.artists}</span>
-                        </div>
+                        <SearchSuggestion suggestion={suggestion} />
                 ))
             )}
+            </div>
         </>
     )
 }
