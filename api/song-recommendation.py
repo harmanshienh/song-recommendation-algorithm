@@ -9,8 +9,11 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 from dotenv import load_dotenv
+from flask import Flask, jsonify
 
 load_dotenv()
+
+app = Flask(__name__)
 
 data = pd.read_csv("data.csv")
 
@@ -63,7 +66,7 @@ def get_mean_vector(song_list, spotify_data):
             print('Warning: {} does not exist in Spotify or in database'.format(song['name']))
             continue
         song_vector = song_data[number_cols].values
-        song_vectors.append(song_vector)  
+        song_vectors.append(song_vector)
     
     song_matrix = np.array(list(song_vectors))
     return np.mean(song_matrix, axis=0)
@@ -84,6 +87,7 @@ song_cluster_pipeline = Pipeline([('scaler', StandardScaler()),
                                   ('kmeans', KMeans(n_clusters=20, verbose=False))], 
                                   verbose=False)
 
+@app.route('/recommend')
 def recommend_songs(song_list, spotify_data, n_songs=10):
     metadata_cols = ['name', 'year', 'artists']
     song_dict = flatten_dict_list(song_list)
@@ -110,11 +114,10 @@ def recommend_songs(song_list, spotify_data, n_songs=10):
     rec_songs = rec_songs[~rec_songs['name'].isin(song_dict['name'])]
     return rec_songs[metadata_cols].to_dict(orient='records')
 
-test_song_list = [{'name': 'Forever', 'year': 2009, 
-                   'name': 'Slow Jamz (feat. Kanye West & Jamie Foxx)', 'year': 2004, 
-                   'name': 'Earned It (Fifty Shades Of Grey) - From The ""Fifty Shades Of Grey"" Soundtrack', 'year': 2015, 
-                   'name': 'Low Life (feat. The Weeknd)', 'year': 2016,
-                   'name': 'Jumpman', 'year': 2015}] 
+test_song_list = [{'name': 'Forever', 'year': 2009}, 
+                   {'name': 'Slow Jamz (feat. Kanye West & Jamie Foxx)', 'year': 2004},
+                   {'name': 'Low Life (feat. The Weeknd)', 'year': 2016},
+                   {'name': 'Jumpman', 'year': 2015}] 
 new_songs = recommend_songs(test_song_list, data)
 
 for song in new_songs:
