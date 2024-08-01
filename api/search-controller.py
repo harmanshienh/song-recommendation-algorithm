@@ -4,6 +4,7 @@ from spotipy.oauth2 import SpotifyClientCredentials
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
+from ast import literal_eval
 
 import os
 
@@ -24,18 +25,24 @@ def filter_csv():
 
     params = request.args.get('query', '')
 
-    filtered_data = data[data['name'].str.contains(params, case=False, na=False)]
+    filtered_data = data[data['name'].str.contains(params, case=False, na=False)
+                         | data['artists'].str.contains(params, case=False, na=False)]
 
     filtered_data = filtered_data.head(10)
 
     return jsonify(filtered_data.to_dict(orient='records'))
+
+@app.route('/api/list', methods=['GET'])
+def convert_to_list():
+    params = request.args.get('query', '')
+    return literal_eval(params)
 
 @app.route('/api/album', methods=['GET'])
 def get_album_cover():
     name = request.args.get('name', '')
     artists = request.args.get('artists', '')
 
-    artists_list = artists.split(',')
+    artists_list = artists.split(', ')
     artists_query = ' '.join([f'artist:{artist.strip()}' for artist in artists_list])
 
     query = f"track:{name} {artists_query}"

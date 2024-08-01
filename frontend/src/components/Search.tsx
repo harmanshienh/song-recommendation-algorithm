@@ -4,13 +4,12 @@ import SearchSuggestion from './SearchSuggestion';
 
 export interface Suggestion {
     name: string;
-    artists: string[];
+    artists: string;
 }
 
 export default function Search() {
     const [searchTerm, setSearchTerm] = useState('');
     const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
-    const [songs, setSongs] = useState([]);
 
     const searchRef = useRef<HTMLInputElement>(null);
 
@@ -34,8 +33,8 @@ export default function Search() {
         e.preventDefault();
     }
 
-    console.log(suggestions);
-
+    console.log(suggestions)
+    
     return (
         <>
             <form onClick={handleClick} onSubmit={handleSubmit}>
