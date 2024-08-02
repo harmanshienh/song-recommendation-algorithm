@@ -1,17 +1,24 @@
 import { useEffect, useRef, useState } from 'react'
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import SearchSuggestion from './SearchSuggestion';
+import { useDispatch } from 'react-redux';
+import { addSong } from '../redux/actions';
 
 export interface Suggestion {
     name: string;
+    id: string;
     artists: string;
+    year: number;
 }
 
 export default function Search() {
     const [searchTerm, setSearchTerm] = useState('');
     const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
 
-    const searchRef = useRef<HTMLInputElement>(null);
+    const formRef = useRef<HTMLFormElement>(null);
+    const searchRef = useRef<HTMLInputElement>(null);    
+
+    const dispatch = useDispatch();
 
     const handleClick = () => {
         if (searchRef.current) {
@@ -29,15 +36,21 @@ export default function Search() {
         fetchSuggestions();
     }, [searchTerm])
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const handleSuggestionClick = (suggestion: Suggestion) => {
+        dispatch(addSong(suggestion));
+        if (formRef.current) {
+            formRef.current.requestSubmit();
+        }
     }
 
-    console.log(suggestions)
-    
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setSearchTerm('');
+    }
+
     return (
         <>
-            <form onClick={handleClick} onSubmit={handleSubmit}>
+            <form ref={formRef} onClick={handleClick} onSubmit={handleSubmit}>
                 <div className='group flex mx-auto items-center bg-slate-200 mt-20 rounded-full w-full md:max-w-2xl border-2 
                        focus-within:border-green-500 focus-within:transition-colors'>
                     <HiMagnifyingGlass className='text-6xl text-gray-500 px-3 group-focus-within:text-green-500 group-hover:text-green-500 transition-colors' />
@@ -51,11 +64,12 @@ export default function Search() {
                 </div>
             </form>
             <div className='max-h-96 overflow-y-auto'>
-            {suggestions.length > 0 && (
-                suggestions.map((suggestion) => (
-                        <SearchSuggestion suggestion={suggestion} />
-                ))
-            )}
+                {searchTerm.length > 0 && (
+                    suggestions.map((suggestion) => (
+                        <SearchSuggestion suggestion={suggestion} 
+                        onClick={() => handleSuggestionClick(suggestion)} />
+                    ))
+                )}
             </div>
         </>
     )
