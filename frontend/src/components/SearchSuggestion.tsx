@@ -40,8 +40,8 @@ export default function SearchSuggestion({ suggestion, onClick } : SuggestionPro
              className='flex flex-row bg-zinc-900 hover:bg-zinc-700 
              transition-colors hover:cursor-pointer w-full md:max-w-2xl 
              mx-auto rounded-lg'>
-            <img src={imageURL} className='h-24 w-auto rounded-lg p-2' />
-            <div className='flex flex-col gap-2 overflow-hidden p-2'>
+            <img src={imageURL} className='h-14 w-auto rounded-lg p-2' />
+            <div className='flex flex-col overflow-hidden p-1'>
                 <span className='text-lg text-slate-200 truncate text-start'>
                     {suggestion.name}
                 </span>
