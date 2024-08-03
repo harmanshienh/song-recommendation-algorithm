@@ -23,10 +23,20 @@ def filter_csv():
 
     data = pd.read_csv(file_path)
 
-    params = request.args.get('query', '')
+    searchTerm = request.args.get('query', '')
+    searchTerm_words = searchTerm.lower().split()
 
-    filtered_data = data[data['name'].str.contains(params, case=False, na=False)
-                         | data['artists'].str.contains(params, case=False, na=False)]
+    def match_terms(text, terms):
+        text = text.lower()
+        for term in terms:
+            if term not in text:
+                return False
+        return True
+
+    filtered_data = data[data.apply(
+        lambda row: match_terms(row['name'], searchTerm_words) 
+        or match_terms(row['artists'], searchTerm_words), axis=1
+    )]
 
     filtered_data = filtered_data.head(10)
 
@@ -39,21 +49,22 @@ def convert_to_list():
 
 @app.route('/api/album', methods=['GET'])
 def get_album_cover():
-    name = request.args.get('name', '')
-    artists = request.args.get('artists', '')
+    # name = request.args.get('name', '')
+    # artists = request.args.get('artists', '')
 
-    artists_list = artists.split(', ')
-    artists_query = ' '.join([f'artist:{artist.strip()}' for artist in artists_list])
+    # artists_list = artists.split(', ')
+    # artists_query = ' '.join([f'artist:{artist.strip()}' for artist in artists_list])
 
-    query = f"track:{name} {artists_query}"
+    # query = f"track:{name} {artists_query}"
 
-    results = sp.search(q=query, type='track', limit=1)
+    # results = sp.search(q=query, type='track', limit=1)
 
-    if results['tracks']['items']:
-        track = results['tracks']['items'][0]
-        album_cover_url = track['album']['images'][0]['url']
-        return jsonify({'album_cover_url': album_cover_url})
-    else:
-        return jsonify({'error': 'Album cover not found', 'query': query, 'artists': artists}), 404
+    # if results['tracks']['items']:
+    #     track = results['tracks']['items'][0]
+    #     album_cover_url = track['album']['images'][0]['url']
+    #     return jsonify({'album_cover_url': album_cover_url})
+    # else:
+    #     return jsonify({'error': 'Album cover not found', 'query': query, 'artists': artists}), 404
+    return jsonify({'album_cover_url': 'https://play-lh.googleusercontent.com/CQri0N-BiyrACHpHPPtITg3TMV5-bZNbAuhjrg-Zpc_mw6tIWZJFPmT8Yr5r4R-xbA=w240-h480-rw'})
 
 app.run(port=3000, debug=True)

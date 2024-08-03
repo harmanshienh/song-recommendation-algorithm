@@ -9,17 +9,21 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 from dotenv import load_dotenv
-from flask import Flask, jsonify
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 load_dotenv()
 
 app = Flask(__name__)
-
-data = pd.read_csv("data.csv")
+CORS(app)
 
 sp = spotipy.Spotify(auth_manager = SpotifyClientCredentials(
     client_id = os.environ["SPOTIFY_CLIENT_ID"], 
     client_secret = os.environ["SPOTIFY_CLIENT_SECRET"]))
+
+song_cluster_pipeline = Pipeline([('scaler', StandardScaler()),
+                                  ('kmeans', KMeans(n_clusters=20, verbose=False))], 
+                                  verbose=False)
 
 def find_song(name, year):
     song_data = defaultdict()
@@ -83,16 +87,19 @@ def flatten_dict_list(dict_list):
             
     return flattened_dict
 
-song_cluster_pipeline = Pipeline([('scaler', StandardScaler()),
-                                  ('kmeans', KMeans(n_clusters=20, verbose=False))], 
-                                  verbose=False)
-
-@app.route('/recommend')
-def recommend_songs(song_list, spotify_data, n_songs=10):
+@app.route('/api/recommend', methods=['POST'])
+def recommend_songs():
+    file_path = os.path.join(os.path.dirname(__file__), 'data.csv')
+    data = pd.read_csv(file_path)
+    num_songs = 5
+    songs = request.get_json()
     metadata_cols = ['name', 'year', 'artists']
-    song_dict = flatten_dict_list(song_list)
+    song_dict = flatten_dict_list(songs)
+
+    if not isinstance(songs, list) or not all(isinstance(song, dict) for song in songs):
+        return jsonify({"error": "Invalid data format"}), 400
     
-    song_center = get_mean_vector(song_list, spotify_data)
+    song_center = get_mean_vector(songs, data)
 
     song_center_df = pd.DataFrame(song_center.reshape(1, -1), columns=number_cols)
     
@@ -101,24 +108,17 @@ def recommend_songs(song_list, spotify_data, n_songs=10):
     
     # Fit the scaler on the numeric columns if it's not already fitted
     if not hasattr(scaler, 'scale_'):  # Check if the scaler has already been fitted
-        scaler.fit(spotify_data[number_cols])
+        scaler.fit(data[number_cols])
     
     # Transform spotify_data and song_center with consistent feature names
-    scaled_data = scaler.transform(spotify_data[number_cols])
+    scaled_data = scaler.transform(data[number_cols])
     scaled_song_center = scaler.transform(song_center_df)
     
     distances = cdist(scaled_song_center, scaled_data, 'cosine')
-    index = list(np.argsort(distances)[:, :n_songs][0])
+    index = list(np.argsort(distances)[:, :num_songs][0])
     
-    rec_songs = spotify_data.iloc[index]
+    rec_songs = data.iloc[index]
     rec_songs = rec_songs[~rec_songs['name'].isin(song_dict['name'])]
-    return rec_songs[metadata_cols].to_dict(orient='records')
+    return jsonify(rec_songs[metadata_cols].to_dict(orient='records'))
 
-test_song_list = [{'name': 'Forever', 'year': 2009}, 
-                   {'name': 'Slow Jamz (feat. Kanye West & Jamie Foxx)', 'year': 2004},
-                   {'name': 'Low Life (feat. The Weeknd)', 'year': 2016},
-                   {'name': 'Jumpman', 'year': 2015}] 
-new_songs = recommend_songs(test_song_list, data)
-
-for song in new_songs:
-    print(f"{song['name']} by {song['artists']} released in {song['year']}")
+app.run(port=4000, debug=True)
