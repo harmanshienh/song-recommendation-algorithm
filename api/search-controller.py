@@ -44,27 +44,30 @@ def filter_csv():
 
 @app.route('/api/list', methods=['GET'])
 def convert_to_list():
-    params = request.args.get('query', '')
-    return literal_eval(params)
+    artists = request.args.get('query', '')
+    return literal_eval(artists)
 
-@app.route('/api/album', methods=['GET'])
-def get_album_cover():
-    # name = request.args.get('name', '')
-    # artists = request.args.get('artists', '')
-
-    # artists_list = artists.split(', ')
-    # artists_query = ' '.join([f'artist:{artist.strip()}' for artist in artists_list])
-
-    # query = f"track:{name} {artists_query}"
-
-    # results = sp.search(q=query, type='track', limit=1)
-
-    # if results['tracks']['items']:
-    #     track = results['tracks']['items'][0]
-    #     album_cover_url = track['album']['images'][0]['url']
-    #     return jsonify({'album_cover_url': album_cover_url})
-    # else:
-    #     return jsonify({'error': 'Album cover not found', 'query': query, 'artists': artists}), 404
-    return jsonify({'album_cover_url': 'https://play-lh.googleusercontent.com/CQri0N-BiyrACHpHPPtITg3TMV5-bZNbAuhjrg-Zpc_mw6tIWZJFPmT8Yr5r4R-xbA=w240-h480-rw'})
+@app.route('/api/geturl', methods=['GET'])
+def fetch_song_url():
+    name = request.args.get('query', '')
+    if not name:
+        return jsonify({'error': 'Query parameter is required'}), 400
+    
+    results = sp.search(q=name, type='track', limit=1) 
+    
+    tracks = results.get('tracks', {})
+    items = tracks.get('items', [])
+    
+    if not items:
+        return jsonify({'error': 'No tracks found'}), 404
+    
+    track = items[0]
+    track_name = track.get('name')
+    track_url = track.get('external_urls', {}).get('spotify')
+    
+    if not track_url:
+        return jsonify({'error': 'No URL found for the track'}), 404
+    
+    return jsonify({'name': track_name, 'url': track_url})
 
 app.run(port=3000, debug=True)

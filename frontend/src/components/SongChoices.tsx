@@ -6,7 +6,7 @@ import { Song } from '../redux/types.ts'
 export default function SongChoices() {
     const songs = useSelector((state: RootState) => state.songs)
   return (
-    <div className='mt-20 w-full sm:max-w-xl'>
+    <div className='mt-20 w-auto'>
         {songs.songs.map((song: Song) => (
             <SearchSelection song={song} />
         ))}

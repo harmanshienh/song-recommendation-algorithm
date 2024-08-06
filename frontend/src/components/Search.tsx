@@ -9,6 +9,7 @@ export interface Suggestion {
     id: string;
     artists: string;
     year: number;
+    image: string;
 }
 
 export default function Search() {
@@ -51,9 +52,13 @@ export default function Search() {
     return (
         <>
             <form ref={formRef} onClick={handleClick} onSubmit={handleSubmit}>
-                <div className='group flex mx-auto items-center bg-slate-200 mt-20 rounded-full w-full md:max-w-2xl border-2 
+                <div className='group flex mx-auto items-center bg-slate-200 
+                     mt-20 rounded-full w-full md:max-w-2xl border-2 
                        focus-within:border-green-500 focus-within:transition-colors'>
-                    <HiMagnifyingGlass className='text-6xl text-gray-500 px-3 group-focus-within:text-green-500 group-hover:text-green-500 transition-colors' />
+                    <HiMagnifyingGlass 
+                    className='text-6xl text-gray-500 px-3 
+                    group-focus-within:text-green-500 
+                    group-hover:text-green-500 transition-colors' />
                     <input
                         type='text'
                         ref={searchRef}

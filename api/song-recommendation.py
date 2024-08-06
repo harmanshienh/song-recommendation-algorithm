@@ -93,7 +93,7 @@ def recommend_songs():
     data = pd.read_csv(file_path)
     num_songs = 5
     songs = request.get_json()
-    metadata_cols = ['name', 'year', 'artists']
+    metadata_cols = ['name', 'year', 'artists', 'image']
     song_dict = flatten_dict_list(songs)
 
     if not isinstance(songs, list) or not all(isinstance(song, dict) for song in songs):

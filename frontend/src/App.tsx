@@ -5,8 +5,9 @@ import SongChoices from './components/SongChoices';
 import { store } from './redux/store.ts'
 import { Provider, useSelector } from 'react-redux';
 import { Song } from './redux/types.ts';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Recommendation from './components/Recommendation.tsx';
+import { BrowserRouter } from 'react-router-dom';
 
 const AppContent: React.FC = () => {
   const songs = useSelector((state: RootState) => state.songs);
@@ -27,6 +28,12 @@ const AppContent: React.FC = () => {
     setRecommendations(data);
   }
 
+  useEffect(() => {
+    if (songs.songs.length === 0) {
+      setRecommendations([]);
+    }
+  }, [songs.songs.length])
+
   return (
     <div className='flex flex-col'>
       <div className='flex sm:justify-start'>
@@ -34,12 +41,10 @@ const AppContent: React.FC = () => {
           Songifind
         </span>
       </div>
-      <div className='flex w-full gap-4'>
-        <div className='flex-1'>
+      <div className='flex w-full gap-4 mx-auto justify-center'>
           <Search />
-        </div>
         {songs.songs.length > 0 &&
-          <div className='flex flex-col flex-1'>
+          <div className='flex flex-col'>
             <SongChoices />
             <button onClick={handleSubmit}
               className='group bg-green-500 border-2 border-green-500 
@@ -52,7 +57,7 @@ const AppContent: React.FC = () => {
           </div>
         }
       </div>
-      {recommendations.length > 0 &&
+      {recommendations.length > 0 && songs.songs.length > 0 &&
         <div className='mt-20 flex flex-col'>
           <span className='text-slate-200 text-6xl font-bold transition-opacity p-5'>
             Here are some songs you might like:
@@ -69,7 +74,9 @@ const AppContent: React.FC = () => {
 function App() {
   return (
     <Provider store={store}>
-      <AppContent />
+      <BrowserRouter>
+        <AppContent />
+      </BrowserRouter>
     </Provider>
   );
 }

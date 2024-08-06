@@ -10,7 +10,6 @@ interface SelectionProp {
 
 export default function SearchSelection({ song }: SelectionProp) {
     const [artists, setArtists] = useState([]);
-    const [imageURL, setImageURL] = useState('');
     const dispatch = useDispatch();
 
     const handleRemoveSong = () => {
@@ -28,10 +27,10 @@ export default function SearchSelection({ song }: SelectionProp) {
     }, [song.artists])
 
     return (
-        <div className='relative flex flex-row bg-zinc-900 hover:bg-zinc-700 
+        <div className='relative flex bg-zinc-900 hover:bg-zinc-700 
              transition-colors hover:cursor-pointer w-full md:max-w-sm
              mx-auto rounded-lg'>
-            <img src='https://play-lh.googleusercontent.com/CQri0N-BiyrACHpHPPtITg3TMV5-bZNbAuhjrg-Zpc_mw6tIWZJFPmT8Yr5r4R-xbA=w240-h480-rw' className='h-24 w-auto rounded-lg p-2' />
+            <img src={song.image} className='h-24 w-auto rounded-lg p-2' />
             <div className='flex flex-col gap-2 overflow-hidden p-2'>
                 <span className='text-lg text-slate-200 truncate text-start max-w-56'>
                     {song.name}
