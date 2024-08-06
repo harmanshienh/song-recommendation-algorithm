@@ -28,15 +28,15 @@ export default function SearchSelection({ song }: SelectionProp) {
 
     return (
         <div className='relative flex bg-zinc-900 hover:bg-zinc-700 
-             transition-colors hover:cursor-pointer w-full md:max-w-sm
+             transition-colors hover:cursor-pointer w-full md:w-[384px]
              mx-auto rounded-lg'>
             <img src={song.image} className='h-24 w-auto rounded-lg p-2' />
-            <div className='flex flex-col gap-2 overflow-hidden p-2'>
+            <div className='flex flex-col gap-2 p-2 pr-8'>
                 <span className='text-lg text-slate-200 truncate text-start max-w-56'>
                     {song.name}
                 </span>
-                <div className='flex gap-1 max-w-56'>
-                    <span className='text-sm text-slate-400 truncate text-start'>
+                <div className='flex gap-1'>
+                    <span className='text-sm text-slate-400 truncate text-start max-w-40'>
                         {artists.join(', ')}
                     </span>
                     <span className='text-sm text-slate-400'>

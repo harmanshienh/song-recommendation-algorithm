@@ -37,12 +37,13 @@ const AppContent: React.FC = () => {
   return (
     <div className='flex flex-col'>
       <div className='flex sm:justify-start'>
-        <span className='text-7xl font-extrabold text-slate-100'>
+        <span className='text-7xl font-extrabold text-slate-100 cursor-pointer'
+              onClick={() => window.location.reload()}>
           Songifind
         </span>
       </div>
-      <div className='flex w-full gap-4 mx-auto justify-center'>
-          <Search />
+      <div className='flex flex-col md:flex-row w-full justify-center gap-4'>
+        <Search />
         {songs.songs.length > 0 &&
           <div className='flex flex-col'>
             <SongChoices />
