@@ -27,7 +27,7 @@ export default function SearchSuggestion({ suggestion, onClick }: SuggestionProp
         {!loading &&
             <div onClick={() => onClick(suggestion)}
                 className='flex flex-row bg-zinc-900 hover:bg-zinc-700 
-             transition-colors hover:cursor-pointer w-full md:max-w-2xl 
+             transition-colors hover:cursor-pointer w-full md:max-w-[600px]
              mx-auto rounded-lg'>
                 <img src={suggestion.image} className='h-14 w-auto rounded-lg p-2' />
                 <div className='flex flex-col overflow-hidden p-1'>

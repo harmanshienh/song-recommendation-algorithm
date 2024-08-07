@@ -17,7 +17,7 @@ const AppContent: React.FC = () => {
     const submissions = songs.songs.map((song: Song) => (
       { 'name': song.name, 'year': song.year }
     ))
-    const res = await fetch('http://localhost:4000/api/recommend', {
+    const res = await fetch('http://localhost:3000/api/recommend', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -38,12 +38,14 @@ const AppContent: React.FC = () => {
     <div className='flex flex-col'>
       <div className='flex sm:justify-start'>
         <span className='text-7xl font-extrabold text-slate-100 cursor-pointer'
-              onClick={() => window.location.reload()}>
+          onClick={() => window.location.reload()}>
           Songifind
         </span>
       </div>
       <div className='flex flex-col md:flex-row w-full justify-center gap-4'>
-        <Search />
+        <div className='-translate-x-10 transition-transform duration-150'>
+          <Search />
+        </div>
         {songs.songs.length > 0 &&
           <div className='flex flex-col'>
             <SongChoices />
@@ -60,7 +62,7 @@ const AppContent: React.FC = () => {
       </div>
       {recommendations.length > 0 && songs.songs.length > 0 &&
         <div className='mt-20 flex flex-col'>
-          <span className='text-slate-200 text-6xl font-bold transition-opacity p-5'>
+          <span className='text-slate-200 text-3xl md:text-6xl font-bold transition-opacity pb-3 md:p-5'>
             Here are some songs you might like:
           </span>
           {recommendations.map((recommendation) => (

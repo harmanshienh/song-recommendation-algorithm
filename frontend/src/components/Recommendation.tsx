@@ -15,12 +15,15 @@ interface RecommendationProp {
 export default function Recommendation({ recommendation }: RecommendationProp) {
     const [artists, setArtists] = useState([]);
     const [url, setUrl] = useState('');
+    const [visible, setVisible] = useState(false);
 
     useEffect(() => {
         const fetchArtists = async () => {
+            setVisible(false);
             const res = await fetch(`http://localhost:3000/api/list?query=${recommendation.artists}`);
             const data = await res.json();
             setArtists(data);
+            setVisible(true);
         }
 
         fetchArtists();
@@ -38,9 +41,9 @@ export default function Recommendation({ recommendation }: RecommendationProp) {
 
     return (
         <Link to={url}>
-            <div className='relative flex flex-row bg-zinc-900 hover:bg-zinc-700 
-             transition-colors hover:cursor-pointer w-full md:max-w-sm
-             mx-auto rounded-lg'>
+            <div className={`relative flex flex-row bg-zinc-900 hover:bg-zinc-700 
+              hover:cursor-pointer w-full sm:max-w-sm
+             mx-auto rounded-lg transition-all duration-300 ease-in-out ${visible ? 'opacity-100' : 'opacity-0'}`}>
                 <img src={recommendation.image} className='h-24 w-auto rounded-lg p-2' />
                 <div className='flex flex-col gap-2 overflow-hidden p-2'>
                     <span className='text-lg text-slate-200 truncate text-start max-w-56'>

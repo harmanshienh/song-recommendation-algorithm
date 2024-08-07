@@ -10,6 +10,7 @@ interface SelectionProp {
 
 export default function SearchSelection({ song }: SelectionProp) {
     const [artists, setArtists] = useState([]);
+    const [visible, setVisible] = useState(false);
     const dispatch = useDispatch();
 
     const handleRemoveSong = () => {
@@ -21,22 +22,23 @@ export default function SearchSelection({ song }: SelectionProp) {
             const res = await fetch(`http://localhost:3000/api/list?query=${song.artists}`);
             const data = await res.json();
             setArtists(data);
+            setVisible(true);
         }
 
         fetchArtists();
     }, [song.artists])
 
     return (
-        <div className='relative flex bg-zinc-900 hover:bg-zinc-700 
-             transition-colors hover:cursor-pointer w-full md:w-[384px]
-             mx-auto rounded-lg'>
+        <div className={`relative flex bg-zinc-900 hover:bg-zinc-700 
+              hover:cursor-pointer w-full sm:w-[384px]
+             mx-auto rounded-lg transition-all duration-300 ease-in-out ${visible ? 'opacity-100' : 'opacity-0'}`}>
             <img src={song.image} className='h-24 w-auto rounded-lg p-2' />
             <div className='flex flex-col gap-2 p-2 pr-8'>
-                <span className='text-lg text-slate-200 truncate text-start max-w-56'>
+                <span className='text-lg text-slate-200 truncate text-start max-w-28 sm:max-w-56'>
                     {song.name}
                 </span>
                 <div className='flex gap-1'>
-                    <span className='text-sm text-slate-400 truncate text-start max-w-40'>
+                    <span className='text-sm text-slate-400 truncate text-start max-w-28 sm:max-w-40'>
                         {artists.join(', ')}
                     </span>
                     <span className='text-sm text-slate-400'>
