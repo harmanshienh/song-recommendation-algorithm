@@ -20,7 +20,7 @@ export default function Recommendation({ recommendation }: RecommendationProp) {
     useEffect(() => {
         const fetchArtists = async () => {
             setVisible(false);
-            const res = await fetch(`http://localhost:3000/api/list?query=${recommendation.artists}`);
+            const res = await fetch(`/api/list?query=${recommendation.artists}`);
             const data = await res.json();
             setArtists(data);
             setVisible(true);
@@ -31,7 +31,7 @@ export default function Recommendation({ recommendation }: RecommendationProp) {
 
     useEffect(() => {
         const fetchUrl = async () => {
-            const res = await fetch(`http://localhost:3000/api/geturl?query=${recommendation.name}`);
+            const res = await fetch(`/api/geturl?query=${recommendation.name}`);
             const data = await res.json();
             setUrl(data.url);
         }

@@ -14,12 +14,13 @@ export default function SearchSelection({ song }: SelectionProp) {
     const dispatch = useDispatch();
 
     const handleRemoveSong = () => {
-        dispatch(removeSong(song.id));
+        setVisible(false);
+        setTimeout(() => dispatch(removeSong(song.id)), 300);
     }
 
     useEffect(() => {
         const fetchArtists = async () => {
-            const res = await fetch(`http://localhost:3000/api/list?query=${song.artists}`);
+            const res = await fetch(`/api/list?query=${song.artists}`);
             const data = await res.json();
             setArtists(data);
             setVisible(true);

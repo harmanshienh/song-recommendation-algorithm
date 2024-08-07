@@ -12,7 +12,7 @@ export default function SearchSuggestion({ suggestion, onClick }: SuggestionProp
 
     useEffect(() => {
         const fetchArtists = async () => {
-            const res = await fetch(`http://localhost:3000/api/list?query=${suggestion.artists}`);
+            const res = await fetch(`/api/list?query=${suggestion.artists}`);
             const data = await res.json();
             setArtists(data);
         }

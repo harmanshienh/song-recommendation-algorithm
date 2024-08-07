@@ -17,7 +17,7 @@ const AppContent: React.FC = () => {
     const submissions = songs.songs.map((song: Song) => (
       { 'name': song.name, 'year': song.year }
     ))
-    const res = await fetch('http://localhost:3000/api/recommend', {
+    const res = await fetch('/api/recommend', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

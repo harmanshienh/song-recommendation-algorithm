@@ -29,7 +29,7 @@ export default function Search() {
 
     useEffect(() => {
         const fetchSuggestions = async () => {
-            const res = await fetch(`http://localhost:3000/api/filter?query=${searchTerm}`);
+            const res = await fetch(`/api/filter?query=${searchTerm}`);
             const data = await res.json();
             setSuggestions(data);
         }
