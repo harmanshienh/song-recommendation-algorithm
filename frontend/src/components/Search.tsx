@@ -53,7 +53,7 @@ export default function Search() {
         <div className='flex flex-col'>
             <form ref={formRef} onClick={handleClick} onSubmit={handleSubmit}>
                 <div className='group flex mx-auto items-center bg-slate-200 
-                     mt-20 rounded-full w-full md:w-[600px] border-2 
+                     mt-20 rounded-full w-full sm:w-[600px] border-2 
                        focus-within:border-green-500 focus-within:transition-colors'>
                     <HiMagnifyingGlass 
                     className='text-6xl text-gray-500 px-3 

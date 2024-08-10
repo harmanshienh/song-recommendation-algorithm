@@ -40,7 +40,7 @@ export default function Recommendation({ recommendation }: RecommendationProp) {
     }, [])
 
     return (
-        <Link to={url}>
+        <Link to={url} target="_blank">
             <div className={`relative flex flex-row bg-zinc-900 hover:bg-zinc-700 
               hover:cursor-pointer w-full sm:max-w-sm
              mx-auto rounded-lg transition-all duration-300 ease-in-out ${visible ? 'opacity-100' : 'opacity-0'}`}>
