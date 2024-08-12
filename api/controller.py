@@ -124,7 +124,7 @@ def get_mean_vector(song_list, spotify_data):
         if song_data is None:
             print('Warning: {} does not exist in Spotify or in database'.format(song['name']))
             continue
-        song_vector = song_data[number_cols].values
+        song_vector = song_data[number_cols].values        
         song_vectors.append(song_vector)
     
     song_matrix = np.array(list(song_vectors))
@@ -145,9 +145,10 @@ def flatten_dict_list(dict_list):
 @app.route('/api/recommend', methods=['POST'])
 def recommend_songs():
     file_path = os.path.join(os.path.dirname(__file__), 'data.csv')
-    data = pd.read_csv(file_path)
+    data = pd.read_csv(file_path, low_memory=False)
     num_songs = 5
     songs = request.get_json()
+    print(f"Songs: {songs}")
     metadata_cols = ['name', 'year', 'artists', 'image']
     song_dict = flatten_dict_list(songs)
 
