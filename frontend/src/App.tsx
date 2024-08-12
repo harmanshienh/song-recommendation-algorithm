@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import Recommendation from './components/Recommendation.tsx';
 import { BrowserRouter } from 'react-router-dom';
 import { ThreeDots } from 'react-loader-spinner'
+import logo from './public/logo.png';
 
 const AppContent: React.FC = () => {
   const songs = useSelector((state: RootState) => state.songs);
@@ -43,10 +44,8 @@ const AppContent: React.FC = () => {
   return (
     <div className='flex flex-col'>
       <div className='flex sm:justify-start'>
-        <span className='text-7xl font-extrabold text-slate-100 cursor-pointer'
-          onClick={() => window.location.reload()}>
-          Songifind
-        </span>
+        <img src={logo} onClick={() => window.location.reload()} 
+        className='cursor-pointer h-16 w-auto'/>
       </div>
       <div className='flex flex-col md:flex-row w-full justify-center items-start 
                       gap-4 min-h-[300px] px-2 sm:px-1 mx-auto transition-all 
