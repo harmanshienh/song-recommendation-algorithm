@@ -84,7 +84,7 @@ const AppContent: React.FC = () => {
                 :
                 <div className='relative'>
                   <span className='text-slate-100 text-opacity-70 text-2xl 
-                                  font-semibold p-8'>
+                                  font-bold p-8'>
                     Submit
                   </span>
                   <div className='absolute top-1/2 left-1/2 -translate-x-1/2 

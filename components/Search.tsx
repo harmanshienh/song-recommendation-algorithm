@@ -66,7 +66,7 @@ export default function Search() {
                         value={searchTerm}
                         placeholder='What songs do you love?'
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className='text-2xl bg-transparent w-full focus:outline-none' />
+                        className='text-2xl bg-transparent w-full focus:outline-none font-semibold' />
                 </div>
             </form>
             <div className='max-h-96 overflow-y-auto'>
