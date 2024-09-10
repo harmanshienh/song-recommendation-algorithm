@@ -159,14 +159,11 @@ def recommend_songs():
 
     song_center_df = pd.DataFrame(song_center.reshape(1, -1), columns=number_cols)
     
-    # Extract the scaler from the pipeline
     scaler = song_cluster_pipeline.steps[0][1]
     
-    # Fit the scaler on the numeric columns if it's not already fitted
-    if not hasattr(scaler, 'scale_'):  # Check if the scaler has already been fitted
+    if not hasattr(scaler, 'scale_'):
         scaler.fit(data[number_cols])
     
-    # Transform spotify_data and song_center with consistent feature names
     scaled_data = scaler.transform(data[number_cols])
     scaled_song_center = scaler.transform(song_center_df)
     
@@ -177,4 +174,6 @@ def recommend_songs():
     rec_songs = rec_songs[~rec_songs['name'].isin(song_dict['name'])]
     return jsonify(rec_songs[metadata_cols].to_dict(orient='records'))
 
-app.run(port=3000, debug=True)
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 4000))
+    app.run(host="0.0.0.0", port=port, debug=True)

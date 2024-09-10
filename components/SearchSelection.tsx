@@ -1,8 +1,10 @@
+'use client'
 import { useEffect, useState } from 'react'
 import { Song } from '../redux/types';
 import { TiDelete } from "react-icons/ti";
 import { useDispatch } from 'react-redux';
 import { removeSong } from '../redux/actions';
+import Image from 'next/image';
 
 interface SelectionProp {
     song: Song;
@@ -33,7 +35,14 @@ export default function SearchSelection({ song }: SelectionProp) {
         <div className={`relative flex bg-zinc-900 hover:bg-zinc-700 
               hover:cursor-pointer w-full sm:w-[384px]
              mx-auto rounded-lg transition-all duration-300 ease-in-out ${visible ? 'opacity-100' : 'opacity-0'}`}>
-            <img src={song.image} className='h-24 w-auto rounded-lg p-2' />
+            <Image 
+                src={song.image}
+                height={0}
+                width={0}
+                alt={song.name} 
+                unoptimized
+                className='h-24 w-auto rounded-lg p-2' 
+            />
             <div className='flex flex-col gap-2 p-2 pr-8'>
                 <span className='text-lg text-slate-200 truncate text-start max-w-28 sm:max-w-56'>
                     {song.name}

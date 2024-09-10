@@ -1,5 +1,7 @@
-import { Link } from 'react-router-dom'
+'use client'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import Image from 'next/image';
 
 interface Recommendation {
     name: string;
@@ -37,14 +39,21 @@ export default function Recommendation({ recommendation }: RecommendationProp) {
         }
 
         fetchUrl();
-    }, [])
+    }, [recommendation.name])
 
     return (
-        <Link to={url} target="_blank">
+        <Link href={url} target="_blank">
             <div className={`relative flex flex-row bg-zinc-900 hover:bg-zinc-700 
-              hover:cursor-pointer w-full sm:max-w-sm
+              hover:cursor-pointer max-w-sm
              mx-auto rounded-lg transition-all duration-300 ease-in-out ${visible ? 'opacity-100' : 'opacity-0'}`}>
-                <img src={recommendation.image} className='h-24 w-auto rounded-lg p-2' />
+                <Image 
+                    src={recommendation.image}
+                    height={0}
+                    width={0}
+                    alt={recommendation.name} 
+                    unoptimized
+                    className='h-24 w-auto rounded-lg p-2' 
+                />
                 <div className='flex flex-col gap-2 overflow-hidden p-2'>
                     <span className='text-lg text-slate-200 truncate text-start max-w-56'>
                         {recommendation.name}

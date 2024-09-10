@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit';
-import { Song } from './types.ts';
+import { Song } from './types';
 
 export const ADD_SONG = 'ADD_SONG';
 export const REMOVE_SONG = 'REMOVE_SONG';
