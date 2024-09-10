@@ -1,5 +1,7 @@
+'use client'
 import { useEffect, useState } from 'react'
-import { Suggestion } from './Search.tsx'
+import { Suggestion } from './Search'
+import Image from 'next/image.js';
 
 interface SuggestionProp {
     suggestion: Suggestion;
@@ -29,7 +31,14 @@ export default function SearchSuggestion({ suggestion, onClick }: SuggestionProp
                 className='flex flex-row bg-zinc-900 hover:bg-zinc-700 
              transition-colors hover:cursor-pointer w-full md:max-w-[600px]
              mx-auto rounded-lg'>
-                <img src={suggestion.image} className='h-14 w-auto rounded-lg p-2' />
+                <Image 
+                    src={suggestion.image} 
+                    height={0}
+                    width={0}
+                    alt={suggestion.name}
+                    unoptimized
+                    className='h-14 w-auto rounded-lg p-2' 
+                />
                 <div className='flex flex-col overflow-hidden p-1'>
                     <span className='text-lg text-slate-200 truncate text-start'>
                         {suggestion.name}

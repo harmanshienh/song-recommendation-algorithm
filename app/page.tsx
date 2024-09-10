@@ -1,15 +1,16 @@
-import { RootState } from './redux/store.ts'
-import './App.css'
-import Search from './components/Search';
-import SongChoices from './components/SongChoices';
-import { store } from './redux/store.ts'
+'use client'
+import { RootState } from '../redux/store'
+import './globals.css'
+import Search from '../components/Search';
+import SongChoices from '../components/SongChoices';
+import { store } from '../redux/store'
 import { Provider, useSelector } from 'react-redux';
-import { Song } from './redux/types.ts';
+import { Song } from '../redux/types';
 import { useEffect, useState } from 'react';
-import Recommendation from './components/Recommendation.tsx';
-import { BrowserRouter } from 'react-router-dom';
+import Recommendation from '../components/Recommendation';
 import { ThreeDots } from 'react-loader-spinner'
-import logo from './public/logo.png';
+import logo from '../public/logo.png';
+import Image from 'next/image';
 
 const AppContent: React.FC = () => {
   const songs = useSelector((state: RootState) => state.songs);
@@ -44,8 +45,15 @@ const AppContent: React.FC = () => {
   return (
     <div className='flex flex-col'>
       <div className='flex sm:justify-start'>
-        <img src={logo} onClick={() => window.location.reload()} 
-        className='cursor-pointer h-16 w-auto'/>
+        <Image 
+          src={logo}
+          height={0}
+          width={0}
+          alt='Songifind' 
+          onClick={() => window.location.reload()} 
+          unoptimized
+          className='cursor-pointer h-16 w-auto max-sm:mx-auto'
+        />
       </div>
       <div className='flex flex-col md:flex-row w-full justify-center items-start 
                       gap-4 min-h-[300px] px-2 sm:px-1 mx-auto transition-all 
@@ -62,7 +70,7 @@ const AppContent: React.FC = () => {
           <SongChoices />
           {songs.songs.length > 0 && (
             <button onClick={handleSubmit}
-              className={`group border-2 rounded-full w-fit mt-5 mx-auto 
+              className={`group border-2 rounded-full w-fit mt-5 mx-auto block
                         hover:bg-slate-100 transition-all duration-300 
                         ${loading 
                         ? 'cursor-default opacity-70 bg-slate-100 border-slate-100' 
@@ -100,7 +108,7 @@ const AppContent: React.FC = () => {
       {recommendations.length > 0 && songs.songs.length > 0 && (
         <div className='mt-20 flex flex-col'>
           <span className='text-slate-200 text-3xl md:text-6xl font-bold 
-                            transition-opacity pb-3 md:p-5'>
+                            transition-opacity pb-3 md:p-5 mx-auto text-center'>
             Here are some songs you might like:
           </span>
           {recommendations.map((recommendation) => (
@@ -115,9 +123,7 @@ const AppContent: React.FC = () => {
 function App() {
   return (
     <Provider store={store}>
-      <BrowserRouter>
-        <AppContent />
-      </BrowserRouter>
+      <AppContent />
     </Provider>
   );
 }

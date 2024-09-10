@@ -1,3 +1,4 @@
+'use client'
 import { useEffect, useRef, useState } from 'react'
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import SearchSuggestion from './SearchSuggestion';
@@ -70,8 +71,8 @@ export default function Search() {
             </form>
             <div className='max-h-96 overflow-y-auto'>
                 {searchTerm.length > 0 && (
-                    suggestions.map((suggestion) => (
-                        <SearchSuggestion suggestion={suggestion} 
+                    suggestions.map((suggestion, index) => (
+                        <SearchSuggestion key={index} suggestion={suggestion} 
                         onClick={() => handleSuggestionClick(suggestion)} />
                     ))
                 )}
