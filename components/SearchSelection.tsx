@@ -44,7 +44,7 @@ export default function SearchSelection({ song }: SelectionProp) {
                 className='h-24 w-auto rounded-lg p-2' 
             />
             <div className='flex flex-col gap-2 p-2 pr-8'>
-                <span className='text-lg text-slate-200 truncate text-start max-w-28 sm:max-w-56'>
+                <span className='text-lg font-semibold text-slate-200 truncate text-start max-w-28 sm:max-w-56'>
                     {song.name}
                 </span>
                 <div className='flex gap-1'>

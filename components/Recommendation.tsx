@@ -55,7 +55,7 @@ export default function Recommendation({ recommendation }: RecommendationProp) {
                     className='h-24 w-auto rounded-lg p-2' 
                 />
                 <div className='flex flex-col gap-2 overflow-hidden p-2'>
-                    <span className='text-lg text-slate-200 truncate text-start max-w-56'>
+                    <span className='text-lg text-slate-200 truncate text-start max-w-56 font-semibold'>
                         {recommendation.name}
                     </span>
                     <div className='flex gap-1 max-w-56'>
