@@ -17,7 +17,7 @@ import os
 app = Flask(__name__, static_folder='../public')
 CORS(app)
 
-file_path = os.path.join(app.static_folder, 'data.csv')
+file_path = os.path.join(os.path.dirname(__file__), '..', 'public', 'data.csv')
 
 data = pd.read_csv(file_path)
 
@@ -34,10 +34,11 @@ song_cluster_pipeline = Pipeline([('scaler', StandardScaler()),
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
-    if path != "" and os.path.exists(os.path.join(app.static_folder, 'out', path)):
-        return send_from_directory(os.path.join(app.static_folder, 'out'), path)
+    out_dir = os.path.join(app.static_folder, 'out')
+    if path != "" and os.path.exists(os.path.join(out_dir, path)):
+        return send_from_directory(out_dir, path)
     else:
-        return send_from_directory(os.path.join(app.static_folder, 'out'), 'index.html')
+        return send_from_directory(out_dir, 'index.html')
 
 
 @app.route('/api/filter', methods=['GET'])
