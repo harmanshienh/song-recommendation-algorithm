@@ -14,20 +14,12 @@ from ast import literal_eval
 
 import os
 
-app = Flask(__name__, static_folder='../frontend/dist')
+app = Flask(__name__, static_folder='../public')
 CORS(app)
 
 file_path = os.path.join(app.static_folder, 'data.csv')
 
 data = pd.read_csv(file_path)
-
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def serve(path):
-    if path != "" and os.path.exists(app.static_folder + f"/{path}"):
-        return send_from_directory(app.static_folder, path)
-    else:
-        return send_from_directory(app.static_folder, 'index.html')
 
 load_dotenv()
 
