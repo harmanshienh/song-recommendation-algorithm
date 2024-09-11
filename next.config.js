@@ -4,7 +4,7 @@ const nextConfig = {
         return [
             {
                 source: '/api/:path*',
-                destination: 'http://localhost:4000/api/:path*',
+                destination: 'https://songifind-345f23dfea60.herokuapp.com/api/:path*',
             },
         ];
     },
