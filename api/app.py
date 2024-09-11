@@ -7,15 +7,27 @@ from scipy.spatial.distance import cdist
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from dotenv import load_dotenv
 from ast import literal_eval
 
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../frontend/dist')
 CORS(app)
+
+file_path = os.path.join(app.static_folder, 'data.csv')
+
+data = pd.read_csv(file_path)
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+    if path != "" and os.path.exists(app.static_folder + f"/{path}"):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
 
 load_dotenv()
 
@@ -29,9 +41,6 @@ song_cluster_pipeline = Pipeline([('scaler', StandardScaler()),
 
 @app.route('/api/filter', methods=['GET'])
 def filter_csv():
-    file_path = os.path.join(os.path.dirname(__file__), 'data.csv')
-
-    data = pd.read_csv(file_path)
 
     searchTerm = request.args.get('query', '')
     searchTerm_words = searchTerm.lower().split()
@@ -144,8 +153,6 @@ def flatten_dict_list(dict_list):
 
 @app.route('/api/recommend', methods=['POST'])
 def recommend_songs():
-    file_path = os.path.join(os.path.dirname(__file__), 'data.csv')
-    data = pd.read_csv(file_path, low_memory=False)
     num_songs = 5
     songs = request.get_json()
     print(f"Songs: {songs}")
