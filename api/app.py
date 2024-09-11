@@ -31,6 +31,15 @@ song_cluster_pipeline = Pipeline([('scaler', StandardScaler()),
                                   ('kmeans', KMeans(n_clusters=20, verbose=False))], 
                                   verbose=False)
 
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+    if path != "" and os.path.exists(os.path.join(app.static_folder, 'out', path)):
+        return send_from_directory(os.path.join(app.static_folder, 'out'), path)
+    else:
+        return send_from_directory(os.path.join(app.static_folder, 'out'), 'index.html')
+
+
 @app.route('/api/filter', methods=['GET'])
 def filter_csv():
 
