@@ -11,18 +11,15 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from dotenv import load_dotenv
 from ast import literal_eval
-import sqlalchemy
-from sqlalchemy import or_, and_
+from flask_sqlalchemy import SQLAlchemy
+import pymysql
+pymysql.install_as_MySQLdb()
+
 
 import os
 
 app = Flask(__name__, static_folder='../public')
 CORS(app)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["MYSQL_URI"]
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-db = sqlalchemy(app)
 
 file_path = os.path.join(os.path.dirname(__file__), '..', 'public', 'data.csv')
 
@@ -37,6 +34,11 @@ sp = spotipy.Spotify(auth_manager = SpotifyClientCredentials(
 song_cluster_pipeline = Pipeline([('scaler', StandardScaler()),
                                   ('kmeans', KMeans(n_clusters=20, verbose=False))], 
                                   verbose=False)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ["MYSQL_URI"]
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+db = SQLAlchemy(app)
 
 class Song(db.Model):
     __tablename__ = 'songs'
@@ -55,22 +57,23 @@ def serve(path):
     else:
         return send_from_directory(out_dir, 'index.html')
 
-
 @app.route('/api/filter', methods=['GET'])
 def filter_csv():
 
     searchTerm = request.args.get('query', '')
     searchTerm_words = searchTerm.lower().split()
 
-    conditions = []
-    for word in searchTerm_words:
-        conditions.append(or_(Song.name.ilike(f"%{word}%"), Song.artists.ilike(f"%{word}%")))
-    
-    filtered_data = Song.query.filter(and_(*conditions)).limit(10).all()
+    query = Song.query
 
-    result = []
+    for word in searchTerm_words:
+      query = query.filter((Song.name.ilike(f"%{word}%") | 
+                            Song.artists.ilike(f"%{word}%")))  
+    
+    filtered_data = query.limit(10).all()
+
+    results = []
     for song in filtered_data:
-        result.append({
+        results.append({
             'name': song.name,
             'id': song.id,
             'artists': song.artists,
@@ -78,7 +81,8 @@ def filter_csv():
             'image': song.image
         })
 
-    return jsonify(result)
+    return jsonify(results)
+
 @app.route('/api/list', methods=['GET'])
 def convert_to_list():
     artists = request.args.get('query', '')
