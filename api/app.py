@@ -11,11 +11,18 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from dotenv import load_dotenv
 from ast import literal_eval
+import sqlalchemy
+from sqlalchemy import or_, and_
 
 import os
 
 app = Flask(__name__, static_folder='../public')
 CORS(app)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["MYSQL_URI"]
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = sqlalchemy(app)
 
 file_path = os.path.join(os.path.dirname(__file__), '..', 'public', 'data.csv')
 
@@ -30,6 +37,14 @@ sp = spotipy.Spotify(auth_manager = SpotifyClientCredentials(
 song_cluster_pipeline = Pipeline([('scaler', StandardScaler()),
                                   ('kmeans', KMeans(n_clusters=20, verbose=False))], 
                                   verbose=False)
+
+class Song(db.Model):
+    __tablename__ = 'songs'
+    id = db.Column(db.String(255), primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    artists = db.Column(db.String(255), nullable=False)
+    year = db.Column(db.Integer)
+    image = db.Column(db.String(255))
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
@@ -47,22 +62,23 @@ def filter_csv():
     searchTerm = request.args.get('query', '')
     searchTerm_words = searchTerm.lower().split()
 
-    def match_terms(text, terms):
-        text = text.lower()
-        for term in terms:
-            if term not in text:
-                return False
-        return True
+    conditions = []
+    for word in searchTerm_words:
+        conditions.append(or_(Song.name.ilike(f"%{word}%"), Song.artists.ilike(f"%{word}%")))
+    
+    filtered_data = Song.query.filter(and_(*conditions)).limit(10).all()
 
-    filtered_data = data[data.apply(
-        lambda row: match_terms(row['name'], searchTerm_words) 
-        or match_terms(row['artists'], searchTerm_words), axis=1
-    )]
+    result = []
+    for song in filtered_data:
+        result.append({
+            'name': song.name,
+            'id': song.id,
+            'artists': song.artists,
+            'year': song.year,
+            'image': song.image
+        })
 
-    filtered_data = filtered_data.head(10)
-
-    return jsonify(filtered_data.to_dict(orient='records'))
-
+    return jsonify(result)
 @app.route('/api/list', methods=['GET'])
 def convert_to_list():
     artists = request.args.get('query', '')
@@ -185,4 +201,4 @@ def recommend_songs():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 4000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=port, debug=True)
